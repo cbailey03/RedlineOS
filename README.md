@@ -1,5 +1,7 @@
 # RedlineOS
 
+> **⚠ Early Development — Not yet ready for production use.** Expect breaking changes, missing features, and rough edges. Contributions and feedback are welcome.
+
 A free and open-source PDF editor built with Python and PySide6, designed for engineers, architects, and technical professionals who need powerful markup, drawing, and CAD-style annotation tools — without the licensing cost.
 
 ---
