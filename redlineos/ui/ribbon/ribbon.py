@@ -26,6 +26,7 @@ class Ribbon(QWidget):
     fit_page_requested = Signal()
     next_page_requested = Signal()
     previous_page_requested = Signal()
+    comment_panel_requested = Signal()
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -109,8 +110,11 @@ class Ribbon(QWidget):
         tab = RibbonTab()
 
         annotate_group = RibbonGroup("Annotate")
-        for label in ("Highlight", "Comment", "Stamp"):
-            annotate_group.add_button(RibbonButton(label))
+        annotate_group.add_button(RibbonButton("Highlight"))
+        comment_btn = RibbonButton("Comment")
+        comment_btn.clicked.connect(self.comment_panel_requested)
+        annotate_group.add_button(comment_btn)
+        annotate_group.add_button(RibbonButton("Stamp"))
         tab.add_group(annotate_group)
 
         redline_group = RibbonGroup("Redline")
