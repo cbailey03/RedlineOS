@@ -1,3 +1,3 @@
 class Viewport:
-    """Manages pan and zoom state for the canvas."""
-    pass
+    def __init__(self) -> None:
+        self.zoom: float = 1.5

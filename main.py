@@ -1,6 +1,11 @@
 import sys
+import fitz
 from PySide6.QtWidgets import QApplication
 from redlineos.app import Application
+
+# MuPDF logs non-fatal structural warnings (e.g. malformed accessibility trees)
+# to stderr. Suppress display and let callers inspect via fitz.TOOLS.mupdf_warnings().
+fitz.TOOLS.mupdf_display_errors(False)
 
 
 def main():

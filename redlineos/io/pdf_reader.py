@@ -1,7 +1,7 @@
 from pathlib import Path
+import fitz
 
 
 class PdfReader:
-    """Opens a PDF and loads pages via PyMuPDF."""
-
-    def open(self, path: Path) -> None: ...
+    def open(self, path: Path) -> fitz.Document:
+        return fitz.open(str(path))
