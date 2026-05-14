@@ -21,6 +21,11 @@ class Ribbon(QWidget):
     open_requested = Signal(Path)
     save_requested = Signal()
     close_requested = Signal()
+    zoom_in_requested = Signal()
+    zoom_out_requested = Signal()
+    fit_page_requested = Signal()
+    next_page_requested = Signal()
+    previous_page_requested = Signal()
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -77,10 +82,10 @@ class Ribbon(QWidget):
 
     def _build_tabs(self) -> None:
         self._add_home_tab()
+        self._add_view_tab()
         self._add_markup_tab()
         self._add_drawing_tab()
         self._add_cad_tab()
-        self._add_view_tab()
 
     def _add_home_tab(self) -> None:
         tab = RibbonTab()
@@ -153,14 +158,24 @@ class Ribbon(QWidget):
         style = QApplication.style()
 
         zoom_group = RibbonGroup("Zoom")
-        zoom_group.add_button(RibbonButton("Zoom In", style.standardIcon(QStyle.StandardPixmap.SP_ArrowUp)))
-        zoom_group.add_button(RibbonButton("Zoom Out", style.standardIcon(QStyle.StandardPixmap.SP_ArrowDown)))
-        zoom_group.add_button(RibbonButton("Fit Page"))
+        zoom_in_btn = RibbonButton("Zoom In", style.standardIcon(QStyle.StandardPixmap.SP_ArrowUp))
+        zoom_in_btn.clicked.connect(self.zoom_in_requested)
+        zoom_out_btn = RibbonButton("Zoom Out", style.standardIcon(QStyle.StandardPixmap.SP_ArrowDown))
+        zoom_out_btn.clicked.connect(self.zoom_out_requested)
+        fit_btn = RibbonButton("Fit Page")
+        fit_btn.clicked.connect(self.fit_page_requested)
+        zoom_group.add_button(zoom_in_btn)
+        zoom_group.add_button(zoom_out_btn)
+        zoom_group.add_button(fit_btn)
         tab.add_group(zoom_group)
 
         pages_group = RibbonGroup("Pages")
-        pages_group.add_button(RibbonButton("Previous", style.standardIcon(QStyle.StandardPixmap.SP_ArrowLeft)))
-        pages_group.add_button(RibbonButton("Next", style.standardIcon(QStyle.StandardPixmap.SP_ArrowRight)))
+        prev_btn = RibbonButton("Previous", style.standardIcon(QStyle.StandardPixmap.SP_ArrowLeft))
+        prev_btn.clicked.connect(self.previous_page_requested)
+        next_btn = RibbonButton("Next", style.standardIcon(QStyle.StandardPixmap.SP_ArrowRight))
+        next_btn.clicked.connect(self.next_page_requested)
+        pages_group.add_button(prev_btn)
+        pages_group.add_button(next_btn)
         tab.add_group(pages_group)
 
         self._register_tab("View", tab)

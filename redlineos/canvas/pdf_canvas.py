@@ -28,6 +28,8 @@ class PdfCanvas(QGraphicsView):
         self._reader = PdfReader()
         self._document: fitz.Document | None = None
         self._zoom = 1.5
+        self._page_items: list = []
+        self._current_page: int = 0
 
         self.setAcceptDrops(True)
         self.setRenderHints(
@@ -73,6 +75,7 @@ class PdfCanvas(QGraphicsView):
         if self._document is not None:
             self._document.close()
         self._document = self._reader.open(path)
+        self._current_page = 0
         self._render_document()
         self._placeholder.hide()
 
@@ -81,17 +84,41 @@ class PdfCanvas(QGraphicsView):
             self._document.close()
             self._document = None
         self._scene.clear()
+        self._page_items = []
+        self._current_page = 0
         self._placeholder.show()
 
     def _render_document(self) -> None:
         self._scene.clear()
+        self._page_items = []
         y_offset = 0.0
         for i in range(len(self._document)):
             pixmap = self._renderer.render_page(self._document[i], self._zoom)
             item = self._scene.addPixmap(pixmap)
             item.setPos(0.0, y_offset)
+            self._page_items.append(item)
             y_offset += pixmap.height() + PAGE_GAP
         self._scene.setSceneRect(QRectF(self._scene.itemsBoundingRect()))
+
+    def zoom_in(self) -> None:
+        self.scale(1.15, 1.15)
+
+    def zoom_out(self) -> None:
+        self.scale(1.0 / 1.15, 1.0 / 1.15)
+
+    def fit_page(self) -> None:
+        if self._page_items:
+            self.fitInView(self._page_items[self._current_page], Qt.AspectRatioMode.KeepAspectRatio)
+
+    def next_page(self) -> None:
+        if self._page_items and self._current_page < len(self._page_items) - 1:
+            self._current_page += 1
+            self.centerOn(self._page_items[self._current_page])
+
+    def previous_page(self) -> None:
+        if self._page_items and self._current_page > 0:
+            self._current_page -= 1
+            self.centerOn(self._page_items[self._current_page])
 
     def wheelEvent(self, event: QWheelEvent) -> None:
         if event.modifiers() & Qt.KeyboardModifier.ControlModifier:

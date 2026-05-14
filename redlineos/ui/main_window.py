@@ -19,3 +19,8 @@ class MainWindow(QWidget):
 
         self._ribbon.open_requested.connect(self._canvas.load_document)
         self._ribbon.close_requested.connect(self._canvas.close_document)
+        self._ribbon.zoom_in_requested.connect(self._canvas.zoom_in)
+        self._ribbon.zoom_out_requested.connect(self._canvas.zoom_out)
+        self._ribbon.fit_page_requested.connect(self._canvas.fit_page)
+        self._ribbon.next_page_requested.connect(self._canvas.next_page)
+        self._ribbon.previous_page_requested.connect(self._canvas.previous_page)
