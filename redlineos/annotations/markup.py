@@ -1,0 +1,19 @@
+from redlineos.annotations.base_annotation import BaseAnnotation
+
+
+class HighlightAnnotation(BaseAnnotation):
+    def to_dict(self) -> dict: ...
+    @classmethod
+    def from_dict(cls, data: dict) -> "HighlightAnnotation": ...
+
+
+class CommentAnnotation(BaseAnnotation):
+    def to_dict(self) -> dict: ...
+    @classmethod
+    def from_dict(cls, data: dict) -> "CommentAnnotation": ...
+
+
+class StampAnnotation(BaseAnnotation):
+    def to_dict(self) -> dict: ...
+    @classmethod
+    def from_dict(cls, data: dict) -> "StampAnnotation": ...

@@ -1,0 +1,13 @@
+from redlineos.annotations.base_annotation import BaseAnnotation
+
+
+class FreehandAnnotation(BaseAnnotation):
+    def to_dict(self) -> dict: ...
+    @classmethod
+    def from_dict(cls, data: dict) -> "FreehandAnnotation": ...
+
+
+class ShapeAnnotation(BaseAnnotation):
+    def to_dict(self) -> dict: ...
+    @classmethod
+    def from_dict(cls, data: dict) -> "ShapeAnnotation": ...

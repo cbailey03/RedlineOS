@@ -1,0 +1,13 @@
+from redlineos.annotations.base_annotation import BaseAnnotation
+
+
+class CadSymbolAnnotation(BaseAnnotation):
+    def to_dict(self) -> dict: ...
+    @classmethod
+    def from_dict(cls, data: dict) -> "CadSymbolAnnotation": ...
+
+
+class TitleBlockAnnotation(BaseAnnotation):
+    def to_dict(self) -> dict: ...
+    @classmethod
+    def from_dict(cls, data: dict) -> "TitleBlockAnnotation": ...

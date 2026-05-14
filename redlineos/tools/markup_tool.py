@@ -1,0 +1,9 @@
+from redlineos.tools.base_tool import BaseTool
+from PySide6.QtCore import QEvent
+
+
+class MarkupTool(BaseTool):
+    """Handles highlights, underlines, stamps, and comments."""
+    def on_press(self, event: QEvent) -> None: ...
+    def on_move(self, event: QEvent) -> None: ...
+    def on_release(self, event: QEvent) -> None: ...

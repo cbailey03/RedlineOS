@@ -1,0 +1,6 @@
+from pathlib import Path
+
+
+class SvgHandler:
+    def import_svg(self, path: Path) -> None: ...
+    def export_svg(self, path: Path) -> None: ...

@@ -1,0 +1,6 @@
+from pathlib import Path
+
+
+class DxfHandler:
+    def import_dxf(self, path: Path) -> None: ...
+    def export_dxf(self, path: Path) -> None: ...

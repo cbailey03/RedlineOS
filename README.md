@@ -36,9 +36,10 @@ A free and open-source PDF editor built with Python and PySide6, designed for en
 
 ### Requirements
 
-- Python 3.12+
+- Python 3.13+
 - PySide6
-- [pypdf](https://github.com/py-pdf/pypdf) or [pymupdf](https://pymupdf.readthedocs.io/)
+- PyMuPDF
+- ezdxf
 
 ### Installation
 
@@ -50,6 +51,72 @@ python main.py
 ```
 
 > **Note:** Package distribution via PyPI and installers for Windows/macOS/Linux are planned for a future release.
+
+---
+
+## Project Structure
+
+```
+RedlineOS/
+├── main.py                          # Entry point
+├── requirements.txt
+├── pyproject.toml
+├── redlineos/
+│   ├── app.py                       # QMainWindow setup
+│   ├── ui/
+│   │   ├── main_window.py
+│   │   ├── toolbar.py
+│   │   ├── panels/
+│   │   │   ├── layers_panel.py
+│   │   │   ├── properties_panel.py
+│   │   │   └── symbol_library_panel.py
+│   │   └── dialogs/
+│   │       ├── export_dialog.py
+│   │       └── settings_dialog.py
+│   ├── canvas/
+│   │   ├── pdf_canvas.py            # Main drawing surface widget
+│   │   ├── renderer.py              # PyMuPDF → QImage
+│   │   └── viewport.py              # Pan/zoom state
+│   ├── tools/
+│   │   ├── base_tool.py             # Abstract base (on_press/move/release)
+│   │   ├── select_tool.py
+│   │   ├── pen_tool.py
+│   │   ├── shape_tool.py
+│   │   ├── text_tool.py
+│   │   ├── markup_tool.py
+│   │   └── measurement_tool.py
+│   ├── annotations/
+│   │   ├── base_annotation.py
+│   │   ├── markup.py                # Highlights, comments, stamps
+│   │   ├── drawing.py               # Freehand, shapes
+│   │   └── cad.py                   # CAD symbols, title blocks
+│   ├── document/
+│   │   ├── document.py
+│   │   ├── page.py
+│   │   └── layers.py
+│   ├── io/
+│   │   ├── pdf_reader.py
+│   │   ├── pdf_writer.py
+│   │   ├── svg_handler.py
+│   │   └── dxf_handler.py
+│   ├── symbols/
+│   │   ├── library.py
+│   │   └── templates/
+│   │       ├── ansi.py
+│   │       └── iso.py
+│   └── utils/
+│       ├── geometry.py
+│       └── config.py
+├── assets/
+│   ├── icons/
+│   ├── templates/
+│   └── symbols/
+└── tests/
+    ├── test_document.py
+    ├── test_annotations.py
+    ├── test_tools.py
+    └── test_io.py
+```
 
 ---
 
@@ -82,4 +149,4 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for more detail (coming soon).
 
 ## License
 
-RedlineOS is released under the [MIT License](LICENSE).
+RedlineOS is released under the [GNU Affero General Public License v3.0 (AGPL-3.0)](LICENSE).
