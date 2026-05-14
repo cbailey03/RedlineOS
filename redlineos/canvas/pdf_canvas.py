@@ -1,7 +1,7 @@
 from pathlib import Path
 
 import fitz
-from PySide6.QtCore import Qt, QRectF
+from PySide6.QtCore import Qt, QRectF, QTimer
 from PySide6.QtGui import (
     QDragEnterEvent,
     QDropEvent,
@@ -30,6 +30,11 @@ class PdfCanvas(QGraphicsView):
         self._zoom = 1.5
         self._page_items: list = []
         self._current_page: int = 0
+
+        self._zoom_timer = QTimer(self)
+        self._zoom_timer.setSingleShot(True)
+        self._zoom_timer.setInterval(300)
+        self._zoom_timer.timeout.connect(self._rerender_at_zoom)
 
         self.setAcceptDrops(True)
         self.setRenderHints(
@@ -102,13 +107,16 @@ class PdfCanvas(QGraphicsView):
 
     def zoom_in(self) -> None:
         self.scale(1.15, 1.15)
+        self._zoom_timer.start()
 
     def zoom_out(self) -> None:
         self.scale(1.0 / 1.15, 1.0 / 1.15)
+        self._zoom_timer.start()
 
     def fit_page(self) -> None:
         if self._page_items:
             self.fitInView(self._page_items[self._current_page], Qt.AspectRatioMode.KeepAspectRatio)
+            self._zoom_timer.start()
 
     def next_page(self) -> None:
         if self._page_items and self._current_page < len(self._page_items) - 1:
@@ -120,9 +128,40 @@ class PdfCanvas(QGraphicsView):
             self._current_page -= 1
             self.centerOn(self._page_items[self._current_page])
 
+    def _rerender_at_zoom(self) -> None:
+        if not self._document or not self._page_items:
+            return
+
+        center_scene = self.mapToScene(self.viewport().rect().center())
+
+        # Find which page the viewport center is over and store fractional position
+        # within that page so it survives the scene coordinate change after re-render.
+        anchor_page = self._current_page
+        anchor_frac_x = 0.5
+        anchor_frac_y = 0.5
+        for i, item in enumerate(self._page_items):
+            rect = item.sceneBoundingRect()
+            if rect.top() <= center_scene.y() <= rect.bottom():
+                anchor_page = i
+                anchor_frac_x = (center_scene.x() - rect.left()) / rect.width() if rect.width() else 0.5
+                anchor_frac_y = (center_scene.y() - rect.top()) / rect.height() if rect.height() else 0.5
+                break
+
+        effective_zoom = max(0.1, min(10.0, self._zoom * self.transform().m11()))
+        self._zoom = effective_zoom
+        self.resetTransform()
+        self._render_document()
+
+        rect = self._page_items[anchor_page].sceneBoundingRect()
+        self.centerOn(
+            rect.left() + anchor_frac_x * rect.width(),
+            rect.top() + anchor_frac_y * rect.height(),
+        )
+
     def wheelEvent(self, event: QWheelEvent) -> None:
         if event.modifiers() & Qt.KeyboardModifier.ControlModifier:
             factor = 1.15 if event.angleDelta().y() > 0 else 1.0 / 1.15
             self.scale(factor, factor)
+            self._zoom_timer.start()
         else:
             super().wheelEvent(event)
