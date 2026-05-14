@@ -76,6 +76,13 @@ class PdfCanvas(QGraphicsView):
         self._render_document()
         self._placeholder.hide()
 
+    def close_document(self) -> None:
+        if self._document is not None:
+            self._document.close()
+            self._document = None
+        self._scene.clear()
+        self._placeholder.show()
+
     def _render_document(self) -> None:
         self._scene.clear()
         y_offset = 0.0
